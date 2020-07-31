@@ -1,0 +1,7 @@
+BOARD = nodemcuv2
+FLASH_DEF = 4M1M
+
+UPLOAD_PORT = /dev/ttyUSB1
+UPLOAD_SPEED = 921600
+
+OTA_ADDR = elec.local
