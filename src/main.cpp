@@ -90,7 +90,7 @@ void setup()
 	mqtt_connect();
 
 	logger::set_message_sink(mqtt_log);
-	logger::set_level(logger::Level::Info);
+	logger::set_level(logger::Level::DEFAULT_LOG_LEVEL);
 }
 
 void do_background_tasks()

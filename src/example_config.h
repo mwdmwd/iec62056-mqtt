@@ -39,6 +39,9 @@ uint32_t const READ_DELAY = 1000; /* ms */
 #define MQTT_COMMAND_TOPIC MQTT_TOPIC_PREFIX "cmd"
 #define MQTT_OBIS_PREFIX MQTT_TOPIC_PREFIX "obis/"
 
+/* Default log level. Allowed values: None < Error < Warning < Info < Debug */
+#define DEFAULT_LOG_LEVEL Info
+
 /* An additional layer of protection against bit flips: the values of all exported
  * objects are checked, and if they contain any characters other than these, the
  * the newly-read value is discarded. This might not be needed if your optical reading
