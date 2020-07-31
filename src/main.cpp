@@ -48,7 +48,7 @@ void mqtt_connect()
 		mqtt.connect("", MQTT_TOPIC_PREFIX "status/LWT", 1, true, "Offline");
 	}
 
-	mqtt.publish(MQTT_TOPIC_PREFIX "status/LWT", "Online");
+	mqtt.publish(MQTT_TOPIC_PREFIX "status/LWT", "Online", true);
 	mqtt.subscribe(MQTT_COMMAND_TOPIC);
 }
 
