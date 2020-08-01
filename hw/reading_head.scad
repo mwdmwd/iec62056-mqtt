@@ -1,7 +1,7 @@
 $fa = 1;
 $fs = 0.5;
 
-part = "LED holder"; // [LED holder, Cover]
+part = "LED holder"; // [LED holder, Cover, Assembly, Assembly cutaway]
 
 /* [LED holder] */
 led_diameter_1 = 5.5;
@@ -61,7 +61,25 @@ module cover()
 	}
 }
 
+module assembly()
+{
+	led_holder();
+
+	translate([0, 0, cover_height + cover_led_holder_depth - cover_wall_thickness]) rotate([0, 180, 0])
+		cover();
+}
+
 if(part == "LED holder")
 	led_holder();
 else if(part == "Cover")
 	cover();
+else if(part == "Assembly")
+	assembly();
+else if(part == "Assembly cutaway") {
+	difference() {
+		assembly();
+
+		translate([-led_holder_diameter, 0, -1])
+			cube([led_holder_diameter * 2, led_holder_diameter * 2, cover_height + led_holder_height]);
+	}
+}
