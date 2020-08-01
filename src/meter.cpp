@@ -138,6 +138,9 @@ void MeterReader::read_line()
 	else /* Data line */
 	{
 		std::string_view line_view(line, len);
+		if(line_view[0] == STX) /* The first data line starts with an STX, remove it */
+			line_view.remove_prefix(1);
+
 		auto lparen = line_view.find_first_of('(');
 		auto rparen = line_view.find_last_of(')');
 		if(lparen != std::string_view::npos && rparen != std::string_view::npos)
