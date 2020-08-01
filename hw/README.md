@@ -8,7 +8,7 @@
 
 The exact wavelength of the IR LED and phototransistor shouldn't matter, as long as it is between 800nm and 1000nm.
 
-Here's a working [schematic][ir-rxtx] of an infrared transmitter and receiver that will work for this purpose, along with an
+Here's a [schematic][ir-rxtx] of an infrared transmitter and receiver that will work for this purpose, along with an
 [archived copy][ir-rxtx-archive]. Of course, you can use a different circuit, as long as:
 
 - the transmit LED lights up when the TX pin of the ESP8266 is LOW, and
