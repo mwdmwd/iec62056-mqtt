@@ -112,7 +112,7 @@ void do_background_tasks()
 void delay_handle_background(long time)
 {
 	long const increment = 5;
-	while(time -= increment > 0)
+	while((time -= increment) > 0)
 	{
 		do_background_tasks();
 		delay(increment);
