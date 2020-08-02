@@ -32,6 +32,13 @@ public:
 	MeterReader(MeterReader const &) = delete;
 	MeterReader(MeterReader &&) = delete;
 
+	/* Start monitoring an object. Returns true if monitoring was just started
+	 * for the specified object, false otherwise */
+	bool start_monitoring(std::string_view obis);
+	/* Stop monitoring an object. Returns true if monitoring was just stopped
+	 * for the specified object, false otherwise */
+	bool stop_monitoring(std::string_view obis);
+
 	void start_reading();
 	/* Must be called frequently to advance the reading process */
 	void loop();

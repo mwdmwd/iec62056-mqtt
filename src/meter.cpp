@@ -158,14 +158,11 @@ void MeterReader::read_line()
 
 void MeterReader::handle_object(std::string_view obis, std::string_view value)
 {
-	for(char const *export_obis : EXPORT_OBJECTS)
+	auto entry = values_.find(std::string(obis)); /* TODO avoid copy? */
+	if(entry != values_.end())
 	{
-		if(obis.compare(export_obis) == 0)
-		{
-			if(is_valid_object_value(value))
-				values_.insert_or_assign(export_obis, value);
-			break;
-		}
+		if(is_valid_object_value(value))
+			entry->second = value;
 	}
 }
 
@@ -199,6 +196,23 @@ void MeterReader::change_status(Status to)
 		++successes_;
 
 	status_ = to;
+}
+
+bool MeterReader::start_monitoring(std::string_view obis)
+{
+	/* Don't allow adding a new monitored object in the middle of a readout */
+	if(status_ == Status::Busy) return false;
+
+	auto [_, was_inserted] = values_.emplace(obis, "");
+	return was_inserted;
+}
+
+bool MeterReader::stop_monitoring(std::string_view obis)
+{
+	/* Don't allow removing a monitored object in the middle of a readout */
+	if(status_ == Status::Busy) return false;
+
+	return values_.erase(std::string(obis)) == 1;
 }
 
 void MeterReader::start_reading()

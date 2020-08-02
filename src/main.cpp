@@ -91,6 +91,12 @@ void setup()
 
 	logger::set_message_sink(mqtt_log);
 	logger::set_level(logger::Level::DEFAULT_LOG_LEVEL);
+
+	/* Monitor all of the objects that we want to export over MQTT */
+	for(char const *obis : EXPORT_OBJECTS)
+	{
+		reader.start_monitoring(obis);
+	}
 }
 
 void do_background_tasks()
