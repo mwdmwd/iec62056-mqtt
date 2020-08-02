@@ -65,7 +65,7 @@ module assembly()
 {
 	led_holder();
 
-	translate([0, 0, cover_height + cover_led_holder_depth - cover_wall_thickness]) rotate([0, 180, 0])
+	translate([0, 0, cover_height + cover_wall_thickness + led_holder_height - cover_led_holder_depth]) rotate([0, 180, 0])
 		cover();
 }
 
@@ -79,7 +79,9 @@ else if(part == "Assembly cutaway") {
 	difference() {
 		assembly();
 
-		translate([-led_holder_diameter, 0, -1])
-			cube([led_holder_diameter * 2, led_holder_diameter * 2, cover_height + led_holder_height]);
+		translate([-led_holder_diameter - cover_wall_thickness, 0, -1])
+			cube([led_holder_diameter * 2 + cover_wall_thickness * 2,
+			      led_holder_diameter * 2,
+				  cover_height + led_holder_height + cover_wall_thickness]);
 	}
 }
