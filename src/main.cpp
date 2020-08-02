@@ -176,7 +176,7 @@ void loop()
 	uint16_t max_block;
 	uint8_t heap_frag;
 	ESP.getHeapStats(&free_heap, &max_block, &heap_frag);
-	logger::debug("heap free=%" PRIu32 ", frag=%" PRIu16 ", max blk=%" PRIu8,
+	logger::debug("heap free=%" PRIu32 ", frag=%" PRIu8 ", max blk=%" PRIu16,
 	              free_heap, heap_frag, max_block);
 
 #ifdef LED_PIN
