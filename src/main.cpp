@@ -1,3 +1,4 @@
+#include <cinttypes>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -135,7 +136,7 @@ void loop()
 	else if(status == MeterReader::Status::Ok)
 	{
 		read_just_completed = true; /* Read completed successfully */
-		next_delay = READ_DELAY; /* Reset delay to default */
+		next_delay = READ_DELAY;    /* Reset delay to default */
 		char topic[sizeof(MQTT_OBIS_PREFIX) + MAX_OBIS_CODE_LENGTH];
 		strcpy(topic, MQTT_OBIS_PREFIX);
 
