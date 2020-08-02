@@ -121,7 +121,8 @@ void delay_handle_background(long time)
 
 void loop()
 {
-	static uint32_t next_delay;
+	static uint32_t next_delay = READ_DELAY;
+	bool read_just_completed = false;
 	do_background_tasks();
 
 	reader.loop();
@@ -129,12 +130,12 @@ void loop()
 
 	if(status == MeterReader::Status::Ready)
 	{
-		next_delay = 0;
 		reader.start_reading();
 	}
 	else if(status == MeterReader::Status::Ok)
 	{
-		next_delay = READ_DELAY;
+		read_just_completed = true; /* Read completed successfully */
+		next_delay = READ_DELAY; /* Reset delay to default */
 		char topic[sizeof(MQTT_OBIS_PREFIX) + MAX_OBIS_CODE_LENGTH];
 		strcpy(topic, MQTT_OBIS_PREFIX);
 
@@ -149,7 +150,7 @@ void loop()
 	}
 	else if(status != MeterReader::Status::Busy) /* Not Ready, Ok or Busy => error */
 	{
-		if(!next_delay) next_delay = READ_DELAY;
+		read_just_completed = true; /* Read completed with error */
 		next_delay *= 2;
 		if(next_delay > 60 * 1000)
 		{
@@ -161,7 +162,7 @@ void loop()
 	}
 
 	/* If we didn't just complete a read, skip logging and LED blinking */
-	if(!next_delay) return;
+	if(!read_just_completed) return;
 
 	size_t successes = reader.successes();
 	size_t errors = reader.errors();
