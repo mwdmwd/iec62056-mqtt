@@ -91,6 +91,7 @@ void setup()
 	mqtt_connect();
 
 	logger::set_message_sink(mqtt_log);
+	logger::set_timestamp_source(millis);
 	logger::set_level(logger::Level::DEFAULT_LOG_LEVEL);
 
 	/* Monitor all of the objects that we want to export over MQTT */
