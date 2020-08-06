@@ -10,9 +10,16 @@
 #include "dl.h"
 #include "uart.h"
 
+/* Must be 3 characters */
 #define MANUFACTURER "AAA"
+/* For Mode C: 0-6. For Mode B: A-F. For Mode A: anything else */
 #define BAUD_ID "5"
 #define PRODUCT "FAKE01-1234"
+
+/* Mode selection, uncomment only one of these */
+#define USE_MODE_C
+// #define USE_MODE_B
+// #define USE_MODE_A
 
 #define IDENTIFICATION "/" MANUFACTURER BAUD_ID PRODUCT "\r\n"
 
@@ -56,8 +63,14 @@ struct baud_setting const BAUD_SETTINGS[] = {
 
 static _Bool set_baud(uint8_t identifier)
 {
-	if(identifier < '0' || identifier > '6') return false;
-	struct baud_setting const *set = &BAUD_SETTINGS[identifier - '0'];
+	struct baud_setting const *set = 0;
+
+	if(identifier >= '0' && identifier <= '6') /* Mode C */
+		set = &BAUD_SETTINGS[identifier - '0'];
+	else if(identifier >= 'A' && identifier <= 'F') /* Mode B */
+		set = &BAUD_SETTINGS[identifier - 'A' + 1];
+
+	if(!set) return false;
 
 	if(set->use_2x)
 		UCSR0A |= (1 << U2X0);
@@ -208,6 +221,7 @@ int main(void)
 		uart_puts(IDENTIFICATION);
 		uart_rx_enable();
 
+#if defined(USE_MODE_C)
 		countdown = RECEIVE_TIMEOUT;
 		uint8_t vzy[3];
 		uint8_t read_idx = 0;
@@ -249,16 +263,20 @@ int main(void)
 					err();
 					read_idx = 5; /* Set read_idx to something invalid to signal the error */
 				}
-				else
-				{
-					_delay_ms(500);
-				}
 				break;
 			}
 		}
 
 		/* Only transmit the dataset if a full option select message was read, or none at all */
 		if(read_idx != 0 && read_idx != 6) continue;
+#elif defined(USE_MODE_B)
+		_delay_ms(66);
+		set_baud(BAUD_ID[0]); /* Just change baud without requiring an acknowledgement */
+#endif
+
+#if !defined(USE_MODE_A)
+		_delay_ms(500); /* Wait "some" time for the HHU to become ready after changing speed */
+#endif
 
 		uart_rx_disable();
 		dl_begin();
