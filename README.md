@@ -1,5 +1,5 @@
 # iec62056-mqtt
-Electricity meter -> MQTT bridge for ESP8266. Supports data readout of meters using IEC62056-21 (aka IEC61107, IEC1107) in mode C.
+Electricity meter -> MQTT bridge for ESP8266. Supports data readout of meters using IEC62056-21 (aka IEC61107, IEC1107) in mode C (and possibly A and B as well).
 
 ## Requirements
 - [ESP8266 Arduino core][arduino8266] v3.0 or newer (with C++17 support). If v3.0 hasn't been released yet, use the latest git version.

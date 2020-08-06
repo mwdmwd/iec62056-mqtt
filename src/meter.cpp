@@ -14,19 +14,27 @@
 
 uint16_t const BAUD_RATES[] = {
     /* 0 */ 300,
-    /* 1 */ 600,
-    /* 2 */ 1200,
-    /* 3 */ 2400,
-    /* 4 */ 4800,
-    /* 5 */ 9600,
-    /* 6 */ 19200};
+    /* 1, A */ 600,
+    /* 2, B */ 1200,
+    /* 3, C */ 2400,
+    /* 4, D */ 4800,
+    /* 5, E */ 9600,
+    /* 6, F */ 19200};
 
-static std::optional<uint32_t> baud_char_to_rate(char identification)
+struct BaudSwitchParameters
 {
-	if(identification >= '0' && identification <= '6')
-		return BAUD_RATES[identification - '0'];
-	else
-		return std::nullopt;
+	bool send_acknowledgement;
+	std::optional<uint32_t> new_baud;
+};
+
+static BaudSwitchParameters baud_char_to_params(char identification)
+{
+	if(identification >= '0' && identification <= '6')        /* Mode C */
+		return {true, BAUD_RATES[identification - '0']};      /* send acknowledgement, switch baud */
+	else if(identification >= 'A' && identification <= 'F')   /* Mode B */
+		return {false, BAUD_RATES[identification - 'A' + 1]}; /* no acknowledgement, switch baud */
+	else                                                      /* possibly Mode A */
+		return {false, std::nullopt};                         /* no acknowledgement, don't switch baud */
 }
 
 static bool is_valid_object_value(std::string_view value)
@@ -89,19 +97,24 @@ void MeterReader::read_identification()
 
 void MeterReader::switch_baud()
 {
-	auto newBaud = baud_char_to_rate(baud_char_);
-	if(!newBaud)
+	BaudSwitchParameters params = baud_char_to_params(baud_char_);
+
+	if(params.send_acknowledgement)
 	{
-		logger::err("invalid baud char '%c%'", baud_char_);
-		return change_status(Status::ProtocolError);
+		serial_.begin(INITIAL_BAUD_RATE, SERIAL_7E1, SERIAL_TX_ONLY);
+		serial_.printf(ACK "0%c0\r\n", baud_char_);
+		serial_.flush();
 	}
 
-	serial_.begin(INITIAL_BAUD_RATE, SERIAL_7E1, SERIAL_TX_ONLY);
-	serial_.printf(ACK "0%c0\r\n", baud_char_);
-	serial_.flush();
-
-	logger::debug("switching to %" PRIu32 "bps", *newBaud);
-	serial_.begin(*newBaud, SERIAL_7E1, SERIAL_RX_ONLY);
+	if(params.new_baud)
+	{
+		logger::debug("switching to %" PRIu32 "bps", *params.new_baud);
+		serial_.begin(*params.new_baud, SERIAL_7E1, SERIAL_RX_ONLY);
+	}
+	else
+	{
+		serial_.begin(INITIAL_BAUD_RATE, SERIAL_7E1, SERIAL_RX_ONLY);
+	}
 
 	step_ = Step::InData;
 	checksum_ = STX; /* Start with checksum=STX to avoid having to avoid xoring it */
