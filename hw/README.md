@@ -2,8 +2,9 @@
 ## Electronics
 - ESP8266 or ESP8266-based board (NodeMCU or similar)
 - IR-sensitive phototransistor, for example BPW96B
+- NPN transistor (to amplify the output of the phototransistor)
 - IR LED, along with a suitable resistor
-- PNP transistor
+- PNP transistor (to drive the LED)
 - Resistor or potentiometer for the receiving circuit
 
 The exact wavelength of the IR LED and phototransistor shouldn't matter, as long as it is between 800nm and 1000nm.
@@ -19,6 +20,8 @@ I found that the circuit linked above requires very precise selection of the pul
 ## Reading head case
 [reading_head.scad](reading_head.scad) is a customizable OpenSCAD model of a case for the optical reading head. It consists of 2 parts, one to hold the LED and phototransistor and another to seal up the back and protect against outside light. One way of holding it to the meter is to cut a ring out of a fridge magnet or similar device and glue it to the front of the reading head. Commercial reading heads also use magnets to attach to the meter.
 
+## Optical component positioning
+When looking at the front of the meter, its internal infrared receiver is on the left side of the optical port, and the meter's infrared transmitter is on the right. For best results, position your LED directly over the meter's receiver, and your phototransistor directly over the meter's transmitter.
 
 [ir-rxtx]: https://nrqm.ca/nrqm.ca/2011/08/transmitting-uart-serial-over-infrared/index.html
 [ir-rxtx-archive]: https://web.archive.org/web/20180812180402/http://nrqm.ca/2011/08/transmitting-uart-serial-over-infrared/
