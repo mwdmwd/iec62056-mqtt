@@ -93,7 +93,11 @@ void MeterReader::read_identification()
 	identification[len - 1] = 0; /* Remove \r and null terminate */
 	logger::debug("identification=%s", identification);
 
+#ifndef MODE_OVERRIDE
 	baud_char_ = identification[4];
+#else
+	baud_char_ = MODE_OVERRIDE;
+#endif
 	step_ = Step::IdentificationRead;
 }
 

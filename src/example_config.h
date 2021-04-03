@@ -32,6 +32,10 @@ char const *const EXPORT_OBJECTS[] = {
  * "230.5" instead of "230.5*V" */
 // #define STRIP_UNIT
 
+/* Uncomment to override automatic mode selection, for example to limit the baud
+ * rate. Use if you have problems with your optical receiver. */
+// #define MODE_OVERRIDE '4'
+
 /* Additional delay between reads. Every time there's an error, this delay is
  * doubled, up to a maximum of 60 seconds. A successful read resets it to the
  * specified value. */
