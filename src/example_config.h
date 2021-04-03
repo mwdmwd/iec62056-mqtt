@@ -28,6 +28,10 @@ char const *const EXPORT_OBJECTS[] = {
     "31.7.0", "51.7.0", "71.7.0", // Current, each phase [A]
 };
 
+/* Uncomment to strip the unit before publishing values. For example,
+ * "230.5" instead of "230.5*V" */
+// #define STRIP_UNIT
+
 /* Additional delay between reads. Every time there's an error, this delay is
  * doubled, up to a maximum of 60 seconds. A successful read resets it to the
  * specified value. */

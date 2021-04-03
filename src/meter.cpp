@@ -12,6 +12,8 @@
 
 #define ACK "\x06"
 
+#define UNIT_SEPARATOR '*'
+
 uint16_t const BAUD_RATES[] = {
     /* 0 */ 300,
     /* 1, A */ 600,
@@ -170,11 +172,22 @@ void MeterReader::read_line()
 	}
 }
 
+static void postprocess_value(std::string_view &value)
+{
+#ifdef STRIP_UNIT
+	size_t unit_sep_pos = value.find_last_of(UNIT_SEPARATOR);
+	if(unit_sep_pos != std::string_view::npos)
+		value.remove_suffix(value.size() - unit_sep_pos);
+#endif
+}
+
 void MeterReader::handle_object(std::string_view obis, std::string_view value)
 {
 	auto entry = values_.find(std::string(obis)); /* TODO avoid copy? */
 	if(entry != values_.end())
 	{
+		postprocess_value(value);
+
 		if(is_valid_object_value(value))
 			entry->second = value;
 	}
